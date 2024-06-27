@@ -92,8 +92,10 @@ class Rbac extends RbacPub {
   }
 
   async _loginPostInternal() {
+    // console.log("888888");
     const username = this.getArg('username')
     const password = this.getArg('password')
+
     const returnTo = this.getArg('return_to', '/')
     const appid = this.getArg('appid')
     const authType = this.getIntArg('authType', constant.AuthType.PASSWORD)
@@ -116,7 +118,15 @@ class Rbac extends RbacPub {
       this.log4js.warn(`application id [%s] not found`, username)
       return {ok: false, reason: 'ERR_APPID_NOT_FOUND'}
     }
-    const {userInfo, err: loginErr} = await this.userLoginInternal(username, password, {authType})
+    var decodePassword=""
+    try {
+      decodePassword = Buffer.from(password, 'base64').toString();
+      console.log("decode pass",decodePassword);
+    } catch (error) {
+      console.log(error);
+      return {ok: false, reason: 'ERR_PASSWORD_MISSING'}
+    }
+    const {userInfo, err: loginErr} = await this.userLoginInternal(username, decodePassword, {authType})
     if (loginErr) {
       return {ok: false, reason: loginErr}
     }
@@ -148,6 +158,7 @@ class Rbac extends RbacPub {
   }
 
   async loginSubmit() {
+    debugger
     const res = await this._loginPostInternal();
     if(!res.ok) {
       const error = errors[res.reason] || 'Login failed!'

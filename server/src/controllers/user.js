@@ -69,6 +69,7 @@ class User extends BasicService {
      */
 
   async login() {
+    console.log("this is login");
     const username = this.getRequiredArg('username')
     const password = this.getRequiredArg('password')
     const authType = this.getIntArg('authType', constant.AuthType.PASSWORD)

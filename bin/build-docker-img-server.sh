@@ -7,13 +7,12 @@ fi
 TAG="$1"
 echo "BUILD TAG: $TAG"
 echo "BUILD CONSOLE..."
-cd ./console && npm install && npm run build:prod
+cd ./console && npm install --unsafe-perm && npm run build:prod
 if [ "$?" != "0" ]; then
   echo "build console failed!"
   exit 2
 fi
 cd ../
 echo "BUILD SERVER..."
-docker build -t igeeky/wolf-server:$TAG -f ./server/Dockerfile ./server
-docker build -t igeeky/wolf-server:latest -f ./server/Dockerfile ./server
+docker build -t igeeky/wolf-server:$TAG -f ./server/DockerfileTB ./server
 echo "BUILD SUCCESS."
